@@ -1,37 +1,59 @@
-const express = require('express');
-const cors = require('cors');
-const nodemailer = require('nodemailer');
-require('dotenv').config();
+const express = require("express");
+const cors = require("cors");
+const nodemailer = require("nodemailer");
+require("dotenv").config();
 
 const app = express();
-const port = process.env.PORT || 3001;
+const port = process.env.PORT || 3002;
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 
-// Rota de teste para garantir que o servidor está funcionando
-app.get('/', (req, res) => {
-  res.send('Servidor funcionando!');
+// Rota de teste
+app.get("/", (req, res) => {
+  res.send("Servidor funcionando!");
 });
 
 // Rota para enviar o e-mail
-app.post('/send-email', async (req, res) => {
-  const { nome, email, telefone, assunto, dataInicio, dataFim, origem, destino, numeroPessoas, orcamento, mensagem } = req.body;
+app.post("/send-email", async (req, res) => {
+  const {
+    nome,
+    email,
+    telefone,
+    assunto,
+    dataInicio,
+    dataFim,
+    origem,
+    destino,
+    numeroPessoas,
+    orcamento,
+    mensagem,
+  } = req.body;
 
   // Configurações do Nodemailer
   const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    host: "mail.turismociabrasil.com.br", // Servidor de saída
+    port: 465, // Porta para SSL
+    secure: true, // Usar SSL
     auth: {
       user: process.env.EMAIL_USER,
       pass: process.env.EMAIL_PASS,
     },
   });
 
+  transporter.verify((error, success) => {
+    if (error) {
+      console.error("Erro ao verificar o transporte:", error);
+    } else {
+      console.log("Transporte configurado corretamente");
+    }
+  });
+
   // Opções de e-mail
   const mailOptions = {
-    from: process.env.EMAIL_USER,
-    to: process.env.RECEIVER_EMAIL,
+    from: email, // Remetente (pode ser o mesmo da variável de ambiente)
+    to: process.env.RECEIVER_EMAIL, // Destinatário
     subject: `Novo pedido de orçamento de ${nome}`,
     text: `
       Nome: ${nome}
@@ -51,9 +73,10 @@ app.post('/send-email', async (req, res) => {
   try {
     // Enviar e-mail
     await transporter.sendMail(mailOptions);
-    res.status(200).send('E-mail enviado com sucesso!');
+    res.status(200).send("E-mail enviado com sucesso!");
   } catch (error) {
-    res.status(500).send('Erro ao enviar e-mail.');
+    console.error(error);
+    res.status(500).send("Erro ao enviar e-mail.");
   }
 });
 
