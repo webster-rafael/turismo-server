@@ -33,7 +33,7 @@ app.post("/send-email", async (req, res) => {
 
   // Configurações do Nodemailer
   const transporter = nodemailer.createTransport({
-    host: "216.172.172.249", // Servidor de saída
+    host: "mail.turismociabrasil.com.br", // Servidor de saída
     port: 465, // Porta para SSL
     secure: true, // Usar SSL
     auth: {
