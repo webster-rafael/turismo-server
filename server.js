@@ -37,8 +37,8 @@ app.post("/send-email", async (req, res) => {
     port: 465, // Porta para SSL
     secure: true, // Usar SSL
     auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
+      user: "contato@turismociabrasil.com.br",
+      pass: "@Duda2507",
     },
   });
 
@@ -53,7 +53,7 @@ app.post("/send-email", async (req, res) => {
   // Opções de e-mail
   const mailOptions = {
     from: email, // Remetente (pode ser o mesmo da variável de ambiente)
-    to: process.env.RECEIVER_EMAIL, // Destinatário
+    to: "contato@turismociabrasil.com.br", // Destinatário
     subject: `Novo pedido de orçamento de ${nome}`,
     text: `
       Nome: ${nome}
